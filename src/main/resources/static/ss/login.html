@@ -15,12 +15,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="/static/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
 
 <body>
@@ -51,7 +51,7 @@
             <div class="col-lg-6">
                 <nav class="header__menu mobile-menu">
                     <ul>
-                        <li class="active"><a href="./index.html">Home</a></li>
+                        <li class="active"><a href="../index.html">Home</a></li>
                         <li><a href="./contact.html">MyPage</a></li>
                         <li><a href="./projects.html">Closet</a></li>
                         <li><a href="./about.html">Chatbot</a></li>
@@ -70,28 +70,34 @@
     <div class="container">
         <div class="card border-secondary mb-3" style="height: 650px">
             <div class="card-header">login</div>
-            <div class="card-body">
-                <div>
-                    <label for="userId" class="form-label mt-4">ID</label>
-                    <input type="text" class="form-control" id="userId" aria-describedby="emailHelp" placeholder="ID">
+            <form id="f">
+                <div class="card-body">
+                    <div>
+                        <label for="userId" class="form-label mt-4">ID</label>
+                        <input type="text" class="form-control" id="userId" aria-describedby="emailHelp"
+                               placeholder="ID">
+                    </div>
+                    <div>
+                        <label for="password" class="form-label mt-4">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password"
+                               autocomplete="off">
+                    </div>
+                    <div class="card-body" style="margin-top: 30px">
+                        <button type="button" id="btnLogin" class="btn btn-dark" style="width: 100%; height: 48px">로그인
+                        </button>
+                    </div>
+                    <div class="card-body" style="margin-top: -20px">
+                        <a id="kakaoLogin"><img src="/img/kakao/kakao_login_medium_wide.png"
+                                                style="width: 100%; object-fit: contain"></a>
+                        <hr>
+                    </div>
+                    <div style="justify-content: space-between; display: flex; margin-left: 30px; margin-right: 30px">
+                        <div id="userReg" style="font-size: 12px;">회원가입</div>
+                        <div id="findUserId" style="font-size: 12px;">아이디 찾기</div>
+                        <div id="findUserPw" style="font-size: 12px;">비밀번호 찾기</div>
+                    </div>
                 </div>
-                <div>
-                    <label for="exampleInputPassword1" class="form-label mt-4">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"
-                           autocomplete="off">
-                </div>
-                <div class="card-body" style="margin-top: 30px">
-                    <button type="button" class="btn btn-dark" style="width: 100%; height: 48px">로그인</button>
-                </div>
-                <div class="card-body" style="margin-top: -20px">
-                    <a><img src="/static/img/kakao/kakao_login_medium_wide.png" style="width: 100%; object-fit: contain"></a>
-                    <hr>
-                </div>
-                <div style="justify-content: space-between; display: flex; margin-left: 30px; margin-right: 30px">
-                    <div style="font-size: 12px;">회원가입</div>
-                    <div style="font-size: 12px;">아이디/비밀번호 찾기</div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </section>
@@ -127,11 +133,51 @@
 <!-- Footer Section End -->
 
 <!-- Js Plugins -->
-<script src="/static/js/jquery-3.3.1.min.js"></script>
-<script src="/static/js/bootstrap.min.js"></script>
-<script src="/static/js/jquery.slicknav.js"></script>
-<script src="/static/js/owl.carousel.min.js"></script>
-<script src="/static/js/slick.min.js"></script>
-<script src="/static/js/main.js"></script>
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.slicknav.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/slick.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/common.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#btnLogin").on("click", function () {
+            let f = document.getElementById("f");
+
+            if (f.userId.value === "") {
+                alert("아이디를 입력하세요.");
+                f.userId.focus();
+                return;
+            }
+
+            if (f.password.value === "") {
+                alert("비밀번호를 입력하세요.");
+                f.password.focus();
+                return;
+            }
+
+            $.ajax({
+                url: "http://" + apiServer + "/login/loginProc",
+                type: "post",
+                dataType: "JSON",
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: $("#f").serialize(),
+                success: function (json) {
+                    if (json.result === 1) {
+                        alert(json.msg);
+                        location.href = "/index.html"
+                    } else {
+                        alert(json.msg);
+                        $("#userId").focus();
+                    }
+                }
+            })
+        })
+    })
+</script>
 </body>
 </html>
